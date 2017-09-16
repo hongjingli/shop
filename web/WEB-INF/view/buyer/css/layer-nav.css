@@ -1,0 +1,15 @@
+
+#cate-li:after {content: '>';position: absolute;right: 50%;bottom: 8px;transform: rotate(90deg);}
+#cate-li:hover:after {color: white;}
+#cate-li li:{background: #adcdfa !important;}
+.nav li{width: 150px;text-align: center;}
+.nav li ul{display:none;padding-left: 0;background: aqua;}
+.nav li ul li{display:block;float:none;position:relative;}
+.nav li ul a:after {color: white;content: '>';position: absolute;right: 10px;top:0;vertical-align: middle;line-height: 50px;}
+.nav li:hover ul{display:block;left:0;top:50px;position:absolute;z-index:100;}
+.nav li:hover ul li a{display:block;text-align:center;}
+.nav li:hover ul li a:hover,.nav li:hover ul li:hover a,.nav li:hover ul li:hover li a:hover{}
+.nav li:hover ul ul{display:none;}
+.nav li ul ul a:after{content: '';}
+.nav li:hover ul li:hover ul{display:block;left:150px;top:0px;position:absolute;z-index:300;}
+.nav li:hover ul li:hover ul li a{}

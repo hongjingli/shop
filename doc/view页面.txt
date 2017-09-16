@@ -1,0 +1,17 @@
+buyer:(B模版）
+个人信息页：person-detail
+购物车：person-cart
+商品详情：goods-detail
+商品页：goods-page
+订单页：order-list!!!
+mod:	header,left,goods-page,carousel
+
+seller:
+商品编辑页：goods-edit(A模版）
+商品列表：goods-list(B模版）
+订单列表：order-list(B模版）
+
+admin:(A模版)
+登录页：login
+用户列表页：user
+目录列表页:category

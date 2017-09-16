@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!--默认注解映射的支持 -->    
+     <mvc:default-servlet-handler />  
+     <mvc:resources location="/data/user/goods/img/" mapping="/data/user/goods/img/**"/>
+     <mvc:resources location="/WEB-INF/view/" mapping="/**"/>           
+    
+	<mvc:annotation-driven />
+
+    <!--自动扫描目录下所有的类文件 -->
+    <context:component-scan base-package="controller" />
+
+    <!--对模型视图名称的解析 -->
+    <bean id="irViewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/" />
+        <property name="suffix" value=".ftl" />
+    </bean>    
+
+	<!-- 文件上传相关配置 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+		<property name="defaultEncoding" value="utf-8"></property>   
+		<property name="maxUploadSize" value="10485760000"></property>  
+		<property name="maxInMemorySize" value="40960"></property>  
+	</bean>  
+
+	<!-- 配置freeMarker视图解析器 -->
+	<bean id="viewResolverFtl"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+			<property name="contentType" value="text/html; charset=UTF-8" />
+			<property name="exposeRequestAttributes" value="true" />
+			<property name="exposeSessionAttributes" value="true" />
+			<property name="exposeSpringMacroHelpers" value="true" />
+			<property name="requestContextAttribute" value="request" />
+			<property name="cache" value="false" />
+			<property name="suffix" value=".ftl" />
+			<property name="order" value="0" />
+		</bean>
+
+		<!-- 配置freeMarker的模板路径 -->
+		<bean id="freemarkerConfig"
+			class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+			<property name="templateLoaderPath" value="/WEB-INF/view/" />
+			<property name="freemarkerVariables">
+				<map>
+					<entry key="xml_escape" value-ref="fmXmlEscape" />
+				</map>
+			</property>
+			<property name="defaultEncoding" value="UTF-8" />
+			<property name="freemarkerSettings">
+				<props>
+					<prop key="template_update_delay">0</prop>
+					<prop key="locale">zh_CN</prop>
+					<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+					<prop key="date_format">yyyy-MM-dd</prop>
+					<prop key="number_format">#.##</prop>
+				</props>
+			</property>
+		</bean>
+
+		<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape" />
+
+		<!-- 用于将对象转换为 JSON -->
+		<bean id="stringConverter"
+			class="org.springframework.http.converter.StringHttpMessageConverter">
+			<property name="supportedMediaTypes">
+				<list>
+					<value>text/plain;charset=UTF-8</value>
+				</list>
+			</property>
+		</bean>
+		<bean id="jsonConverter"
+			class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+
+			<bean
+				class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+				<property name="messageConverters">
+					<list>
+						<ref bean="stringConverter" />
+						<ref bean="jsonConverter" />
+					</list>
+				</property>
+			</bean>
+
+			<!-- apache.dbcp连接池的配置 -->
+			<bean id="dataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource"
+				destroy-method="close">
+				<property name="driverClassName" value="com.mysql.jdbc.Driver">
+				</property>
+				<property name="url" value="jdbc:mysql://localhost:3306/ct116"></property>
+				<property name="username" value="ct116"></property>
+				<property name="password" value="scutct116"></property>
+				<property name="maxActive" value="100"></property>
+				<property name="maxIdle" value="30"></property>
+				<property name="maxWait" value="500"></property>
+				<property name="defaultAutoCommit" value="true"></property>
+			</bean>
+
+			<!-- jdbc注入 -->
+			<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+				<property name="dataSource">
+					<ref bean="dataSource" />
+				</property>
+			</bean>
+
+			<context:component-scan base-package="service.impl" />
+			<context:component-scan base-package="dao.impl" />
+		</beans>
